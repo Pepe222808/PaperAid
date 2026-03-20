@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "PAPER Aid",
+    "slug": "paperaid",
+    "owner": "pepe222808",
+    "scheme": "paperaid",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "newArchEnabled": true,
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow PAPER Aid to access your camera to scan documents."
+        }
+      ],
+      [
+        "react-native-document-scanner-plugin",
+        {
+          "cameraPermission": "Allow PAPER Aid to access your camera to automatically scan documents."
+        }
+      ]
+    ],
+    "android": {
+      "package": "com.paperaid.app",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0495ef1e-7f6d-4fbe-852a-39d3db51c1ce"
+      }
+    }
+  }
+}
