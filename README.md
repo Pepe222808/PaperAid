@@ -55,12 +55,28 @@ npx.cmd eas-cli build --platform android --profile development
 
 Po instalacji dev builda uruchamiasz projekt przez Metro i laczysz aplikacje z tym samym serwerem.
 
+## Testy
+
+Testy jednostkowe:
+
+```bash
+npm test
+```
+
+Szczegoly testow i checklista manualna:
+
+- `docs/TESTING.md`
+
 ## Struktura (skrot)
 
 - `src/screens` - ekrany aplikacji
 - `src/context/DocumentContext.js` - stan dokumentu i historia
 - `src/context/ThemeContext.js` - motyw jasny/ciemny
 - `src/utils/pdf.js` - generowanie i zapis PDF
+
+Dokumentacja techniczna:
+
+- `docs/ARCHITECTURE.md`
 
 ## Przykladowy PDF
 
