@@ -4,9 +4,8 @@
 
 1. User scans/imports pages on `CaptureScreen`.
 2. Pages are stored in `DocumentContext` as the current working document.
-3. User edits pages in `EditorScreen` (filter, brightness, contrast, rotation, order).
-4. `ExportScreen` generates PDF (`expo-print`) and allows share/download.
-5. Document history is persisted with AsyncStorage.
+3. `ExportScreen` generates PDF (`expo-print`) and allows share/download.
+4. Document history is persisted with AsyncStorage.
 
 ## Main modules
 
@@ -30,12 +29,7 @@
   - Skan
   - Dokumenty
 - Stack screens:
-  - Edytor
   - Eksport
-
-Szczegolowa dokumentacja ekranow:
-
-- `docs/SCREENS.md`
 
 ## Native notes
 

@@ -47,7 +47,7 @@ export function HomeScreen({ navigation }) {
 
   const handleOpenCurrentDocument = () => {
     if (hasPages) {
-      navigation.navigate('Editor');
+      navigation.navigate('Export');
       return;
     }
     navigation.navigate('CaptureTab');
@@ -56,7 +56,7 @@ export function HomeScreen({ navigation }) {
   const handleOpenRecentDocument = (recordId) => {
     const opened = openHistoryDocument(recordId);
     if (opened) {
-      navigation.navigate('Editor');
+      navigation.navigate('Export');
     }
   };
 
@@ -94,7 +94,7 @@ export function HomeScreen({ navigation }) {
               colors={colors}
               styles={styles}
             />
-            <ActionTile icon="create-outline" label="Edytor" onPress={() => navigation.navigate('Editor')} colors={colors} styles={styles} />
+            <ActionTile icon="cloud-upload-outline" label="Eksport i share" onPress={() => navigation.navigate('Export')} colors={colors} styles={styles} />
             <ActionTile icon="download-outline" label="Eksport PDF" onPress={() => navigation.navigate('Export')} colors={colors} styles={styles} />
             <ActionTile icon="library-outline" label="Dokumenty" onPress={() => navigation.navigate('LibraryTab')} colors={colors} styles={styles} />
           </View>

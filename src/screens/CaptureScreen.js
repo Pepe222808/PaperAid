@@ -171,7 +171,7 @@ export function CaptureScreen({ navigation }) {
             <SectionCard title="Szybkie przejscia">
               <View style={styles.buttonRow}>
                 <View style={styles.buttonItem}>
-                  <PrimaryButton label="Edytor" variant="secondary" onPress={() => navigation.navigate('Editor')} />
+                  <PrimaryButton label="Dokumenty" variant="secondary" onPress={() => navigation.navigate('LibraryTab')} />
                 </View>
                 <View style={styles.buttonItem}>
                   <PrimaryButton label="Eksport" variant="secondary" onPress={() => navigation.navigate('Export')} />

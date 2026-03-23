@@ -44,7 +44,7 @@ export function LibraryScreen({ navigation }) {
   const handleOpenDocument = (recordId) => {
     const opened = openHistoryDocument(recordId);
     if (opened) {
-      navigation.navigate('Editor');
+      navigation.navigate('Export');
     }
   };
 

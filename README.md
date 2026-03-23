@@ -22,7 +22,6 @@ Warianty logo uzywane w projekcie:
 - automatyczna detekcja dokumentu (native scanner)
 - automatyczne przycinanie i korekcja perspektywy
 - dokument wielostronicowy
-- edytor stron (filtry, jasnosc, kontrast, rotacja, kolejnosc)
 - nadawanie nazwy dokumentowi
 - eksport do PDF
 - udostepnianie PDF
@@ -101,4 +100,4 @@ Przykladowy plik PDF do repo:
 
 ## Status projektu
 
-Aplikacja jest dzialajaca i obejmuje docelowy flow skanowanie -> edycja -> eksport/historia.
+Aplikacja jest dzialajaca i obejmuje docelowy flow skanowanie -> eksport/historia.

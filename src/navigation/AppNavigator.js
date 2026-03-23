@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAppTheme } from '../context/ThemeContext';
 import { CaptureScreen } from '../screens/CaptureScreen';
-import { EditorScreen } from '../screens/EditorScreen';
 import { ExportScreen } from '../screens/ExportScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { LibraryScreen } from '../screens/LibraryScreen';
@@ -105,7 +104,6 @@ export function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
       <Stack.Screen name="MainTabs" component={MainTabs} />
-      <Stack.Screen name="Editor" component={EditorScreen} />
       <Stack.Screen name="Export" component={ExportScreen} />
     </Stack.Navigator>
   );
