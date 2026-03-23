@@ -51,14 +51,7 @@ export function ExportScreen({ navigation }) {
     if (!uri) {
       return;
     }
-
-    Alert.alert('PDF zapisany', `Plik zapisano lokalnie.\n\n${uri}`, [
-      {
-        text: 'Przejdz do biblioteki',
-        onPress: () => navigation.navigate('MainTabs', { screen: 'LibraryTab' }),
-      },
-      { text: 'OK' },
-    ]);
+    navigation.navigate('MainTabs', { screen: 'LibraryTab' });
   };
 
   const handleShareDocument = async () => {
