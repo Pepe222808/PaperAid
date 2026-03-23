@@ -1,11 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import * as Sharing from 'expo-sharing';
 import { AppIconMark } from '../components/AppIconMark';
 
 import { ScreenShell } from '../components/ScreenShell';
 import { SectionCard } from '../components/SectionCard';
 import { useDocument } from '../context/DocumentContext';
 import { useAppTheme } from '../context/ThemeContext';
+import { createPdfFile } from '../utils/pdf';
 
 function formatUpdatedAt(isoDate) {
   if (!isoDate) {
@@ -42,15 +44,33 @@ function BrandMark({ styles }) {
 export function HomeScreen({ navigation }) {
   const { colors, isDark } = useAppTheme();
   const styles = createStyles(colors, isDark);
-  const { history, pages, hasPages, documentName, openHistoryDocument } = useDocument();
+  const { history, pages, hasPages, documentName, openHistoryDocument, archiveCurrentDocument } = useDocument();
   const recentDocuments = history.slice(0, 3);
 
-  const handleOpenCurrentDocument = () => {
-    if (hasPages) {
-      navigation.navigate('Export');
+  const handleOpenCurrentDocument = async () => {
+    if (!hasPages) {
+      navigation.navigate('CaptureTab');
       return;
     }
-    navigation.navigate('CaptureTab');
+
+    try {
+      const sharingAvailable = await Sharing.isAvailableAsync();
+      if (!sharingAvailable) {
+        Alert.alert('Brak wsparcia', 'Udostepnianie plikow nie jest dostepne na tym urzadzeniu.');
+        return;
+      }
+
+      const pdfUri = await createPdfFile(documentName, pages);
+      archiveCurrentDocument({ pdfUri });
+
+      await Sharing.shareAsync(pdfUri, {
+        mimeType: 'application/pdf',
+        dialogTitle: 'Udostepnij dokument PDF',
+        UTI: 'com.adobe.pdf',
+      });
+    } catch (_error) {
+      Alert.alert('Blad udostepniania', 'Nie udalo sie udostepnic aktualnego dokumentu.');
+    }
   };
 
   const handleOpenRecentDocument = (recordId) => {
