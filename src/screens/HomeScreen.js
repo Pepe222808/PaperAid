@@ -94,7 +94,7 @@ export function HomeScreen({ navigation }) {
               colors={colors}
               styles={styles}
             />
-            <ActionTile icon="cloud-upload-outline" label="Eksport i share" onPress={() => navigation.navigate('Export')} colors={colors} styles={styles} />
+            <ActionTile icon="document-text-outline" label="Aktualny dokument" onPress={handleOpenCurrentDocument} colors={colors} styles={styles} />
             <ActionTile icon="download-outline" label="Eksport PDF" onPress={() => navigation.navigate('Export')} colors={colors} styles={styles} />
             <ActionTile icon="library-outline" label="Dokumenty" onPress={() => navigation.navigate('LibraryTab')} colors={colors} styles={styles} />
           </View>
