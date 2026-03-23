@@ -1,4 +1,4 @@
-#PAPER Aid
+# PAPER Aid
 
 <p align="center">
   <img src="assets/branding/logo-long.svg" alt="PAPER Aid logo long" width="520" />
