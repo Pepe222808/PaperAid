@@ -2,6 +2,20 @@
 
 Aplikacja mobilna do skanowania dokumentow (Android/iOS) zbudowana w Expo React Native.
 
+## Branding
+
+<p align="center">
+  <img src="assets/branding/logo-long.svg" alt="PAPER Aid logo long" width="520" />
+</p>
+
+Warianty logo uzywane w projekcie:
+
+- `assets/branding/logo-long.svg` - glowny logotyp (README/prezentacje)
+- `assets/branding/logo-text.svg` - wersja tekstowa
+- `assets/branding/logo-grouped.svg` - wersja grupowana
+- `assets/branding/logo-grouped-big.svg` - wersja grupowana (duza)
+- `assets/branding/app-icon.svg` - ikona aplikacji
+
 ## Funkcjonalnosci
 
 - skanowanie dokumentow: aparat + galeria
@@ -77,7 +91,7 @@ Szczegoly testow i checklista manualna:
 Dokumentacja techniczna:
 
 - `docs/ARCHITECTURE.md`
-- `docs/SCREENS.md`
+- `docs/BRANDING.md`
 
 ## Przykladowy PDF
 
