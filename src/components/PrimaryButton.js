@@ -31,32 +31,32 @@ export function PrimaryButton({ label, onPress, variant = 'primary', compact = f
 const createStyles = (colors) =>
   StyleSheet.create({
   button: {
-    minHeight: 54,
-    borderRadius: 18,
+    minHeight: 52,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 18,
   },
   compact: {
-    minHeight: 44,
+    minHeight: 40,
   },
   primary: {
     backgroundColor: colors.primary,
   },
   secondary: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.canvas,
     borderWidth: 1,
     borderColor: colors.border,
   },
   pressed: {
-    opacity: 0.88,
+    opacity: 0.9,
   },
   text: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: '800',
   },
   primaryText: {
-    color: '#fffaf2',
+    color: '#ffffff',
   },
   secondaryText: {
     color: colors.text,

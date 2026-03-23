@@ -1,4 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { AppIconMark } from '../components/AppIconMark';
 
 import { ScreenShell } from '../components/ScreenShell';
 import { SectionCard } from '../components/SectionCard';
@@ -18,6 +20,23 @@ function formatUpdatedAt(isoDate) {
     hour: '2-digit',
     minute: '2-digit',
   });
+}
+
+function ActionTile({ icon, label, onPress, primary = false, colors, styles }) {
+  return (
+    <Pressable style={[styles.actionTile, primary ? styles.actionTilePrimary : null]} onPress={onPress}>
+      <Ionicons name={icon} size={20} color={primary ? '#ffffff' : colors.text} />
+      <Text style={[styles.actionTitle, primary ? styles.actionTitlePrimary : null]}>{label}</Text>
+    </Pressable>
+  );
+}
+
+function BrandMark({ styles }) {
+  return (
+    <View style={styles.brandWrap}>
+      <AppIconMark size={30} />
+    </View>
+  );
 }
 
 export function HomeScreen({ navigation }) {
@@ -42,42 +61,51 @@ export function HomeScreen({ navigation }) {
   };
 
   return (
-    <ScreenShell title="PAPER Aid" subtitle="Nowoczesny skaner dokumentow">
+    <ScreenShell
+      title={{
+        text: 'PAPER Aid',
+        leading: <BrandMark styles={styles} />,
+        textStyle: styles.homeTitle,
+      }}
+      subtitle={null}
+      headerColor="#0f9f71"
+    >
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <Pressable style={({ pressed }) => [styles.statusBar, pressed ? styles.pressed : null]} onPress={handleOpenCurrentDocument}>
-          <Text style={styles.statusTitle}>Aktualny dokument</Text>
-          <Text style={styles.statusValue}>
-            {hasPages ? `${documentName} (${pages.length} stron)` : 'Brak aktywnego dokumentu'}
-          </Text>
-        </Pressable>
+        <SectionCard title="Aktualny dokument">
+          <Pressable style={({ pressed }) => [styles.statusBar, pressed ? styles.pressed : null]} onPress={handleOpenCurrentDocument}>
+            <View style={styles.statusIconWrap}>
+              <Ionicons name="document-text-outline" size={22} color="#ffffff" />
+            </View>
+            <View style={styles.statusTextWrap}>
+              <Text style={styles.statusValue}>{hasPages ? documentName : 'Nowy dokument'}</Text>
+              <Text style={styles.statusInfo}>{hasPages ? `${pages.length} stron` : 'Brak stron'}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.muted} />
+          </Pressable>
+        </SectionCard>
 
-        <SectionCard title="Szybkie akcje" subtitle="Najczesciej uzywane">
+        <SectionCard title="Szybkie akcje">
           <View style={styles.actionGrid}>
-            <Pressable style={styles.actionTile} onPress={() => navigation.navigate('CaptureTab')}>
-              <Text style={styles.actionTitle}>Nowy skan</Text>
-              <Text style={styles.actionText}>Kamera i auto-detekcja</Text>
-            </Pressable>
-            <Pressable style={styles.actionTile} onPress={() => navigation.navigate('Editor')}>
-              <Text style={styles.actionTitle}>Edytor</Text>
-              <Text style={styles.actionText}>Filtry i kolejnosc stron</Text>
-            </Pressable>
-            <Pressable style={styles.actionTile} onPress={() => navigation.navigate('Export')}>
-              <Text style={styles.actionTitle}>Eksport PDF</Text>
-              <Text style={styles.actionText}>Zapis i udostepnianie</Text>
-            </Pressable>
-            <Pressable style={styles.actionTile} onPress={() => navigation.navigate('LibraryTab')}>
-              <Text style={styles.actionTitle}>Dokumenty</Text>
-              <Text style={styles.actionText}>Historia i otwieranie</Text>
-            </Pressable>
+            <ActionTile
+              icon="scan-outline"
+              label="Nowy skan"
+              onPress={() => navigation.navigate('CaptureTab')}
+              primary
+              colors={colors}
+              styles={styles}
+            />
+            <ActionTile icon="create-outline" label="Edytor" onPress={() => navigation.navigate('Editor')} colors={colors} styles={styles} />
+            <ActionTile icon="download-outline" label="Eksport PDF" onPress={() => navigation.navigate('Export')} colors={colors} styles={styles} />
+            <ActionTile icon="library-outline" label="Dokumenty" onPress={() => navigation.navigate('LibraryTab')} colors={colors} styles={styles} />
           </View>
         </SectionCard>
 
         <SectionCard
           title="Ostatnie dokumenty"
-          subtitle={recentDocuments.length ? 'Pokazuje 3 ostatnie pozycje' : 'Brak zapisanych dokumentow'}
+          subtitle={recentDocuments.length ? '3 ostatnie pozycje' : 'Brak zapisanych dokumentow'}
         >
           {!recentDocuments.length ? (
-            <Text style={styles.emptyState}>Po pierwszym zapisie dokumentu tutaj od razu zobaczysz jego historie.</Text>
+            <Text style={styles.emptyState}>Po pierwszym zapisie dokumentu tutaj od razu zobaczysz historie.</Text>
           ) : null}
           {recentDocuments.map((document) => (
             <Pressable
@@ -86,12 +114,12 @@ export function HomeScreen({ navigation }) {
               onPress={() => handleOpenRecentDocument(document.id)}
             >
               <View style={styles.documentIcon}>
-                <Text style={styles.documentIconText}>DOC</Text>
+                <Ionicons name="document-outline" size={18} color={colors.primary} />
               </View>
               <View style={styles.documentMeta}>
                 <Text style={styles.documentName}>{document.name}</Text>
                 <Text style={styles.documentInfo}>
-                  {document.pagesCount} stron  |  {formatUpdatedAt(document.updatedAt)}
+                  {document.pagesCount} stron | {formatUpdatedAt(document.updatedAt)}
                 </Text>
               </View>
               <View style={styles.statusPill}>
@@ -107,103 +135,133 @@ export function HomeScreen({ navigation }) {
 
 const createStyles = (colors, isDark) =>
   StyleSheet.create({
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 110,
-    gap: 12,
-  },
-  statusBar: {
-    borderRadius: 18,
-    backgroundColor: colors.canvas,
-    borderWidth: 1,
-    borderColor: colors.border,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    gap: 4,
-  },
-  statusTitle: {
-    fontSize: 12,
-    color: colors.muted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    fontWeight: '700',
-  },
-  statusValue: {
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: '700',
-    lineHeight: 20,
-  },
-  actionGrid: {
-    gap: 8,
-  },
-  actionTile: {
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    backgroundColor: colors.canvas,
-    borderWidth: 1,
-    borderColor: '#eadfce',
-    gap: 2,
-  },
-  actionTitle: {
-    fontSize: 16,
-    color: colors.text,
-    fontWeight: '700',
-  },
-  actionText: {
-    fontSize: 12,
-    lineHeight: 16,
-    color: colors.muted,
-  },
-  emptyState: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: colors.muted,
-  },
-  documentRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  documentIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: colors.primarySoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  documentIconText: {
-    color: colors.primary,
-    fontWeight: '800',
-    fontSize: 11,
-  },
-  documentMeta: {
-    flex: 1,
-    gap: 2,
-  },
-  documentName: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  documentInfo: {
-    fontSize: 12,
-    color: colors.muted,
-  },
-  statusPill: {
-    borderRadius: 999,
-    backgroundColor: isDark ? '#2e4c3e' : '#e6f3eb',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-  },
-  statusPillText: {
-    color: isDark ? '#c9eed9' : '#2f6b47',
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  pressed: {
-    opacity: 0.84,
-  },
-});
+    scrollContent: {
+      paddingHorizontal: 8,
+      paddingBottom: 102,
+      gap: 10,
+    },
+    brandWrap: {
+      width: 30,
+      height: 30,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    homeTitle: {
+      fontSize: 30,
+      letterSpacing: -0.6,
+    },
+    statusBar: {
+      borderRadius: 12,
+      backgroundColor: colors.surfaceStrong,
+      borderWidth: 1,
+      borderColor: colors.border,
+      paddingHorizontal: 12,
+      paddingVertical: 14,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+    },
+    statusIconWrap: {
+      width: 42,
+      height: 42,
+      borderRadius: 21,
+      backgroundColor: colors.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    statusTextWrap: {
+      flex: 1,
+    },
+    statusValue: {
+      color: colors.text,
+      fontSize: 16,
+      fontWeight: '700',
+    },
+    statusInfo: {
+      color: colors.muted,
+      fontSize: 14,
+      marginTop: 2,
+    },
+    actionGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    actionTile: {
+      width: '48.8%',
+      borderRadius: 12,
+      paddingHorizontal: 10,
+      paddingVertical: 14,
+      backgroundColor: colors.canvas,
+      borderWidth: 1,
+      borderColor: colors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 78,
+      gap: 4,
+    },
+    actionTilePrimary: {
+      backgroundColor: colors.primary,
+      borderColor: colors.primary,
+    },
+    actionTitle: {
+      fontSize: 16,
+      color: colors.text,
+      fontWeight: '700',
+      textAlign: 'center',
+    },
+    actionTitlePrimary: {
+      color: '#ffffff',
+    },
+    emptyState: {
+      fontSize: 14,
+      lineHeight: 20,
+      color: colors.muted,
+    },
+    documentRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.border,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      backgroundColor: colors.surface,
+    },
+    documentIcon: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: colors.primarySoft,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    documentMeta: {
+      flex: 1,
+      gap: 2,
+    },
+    documentName: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    documentInfo: {
+      fontSize: 12,
+      color: colors.muted,
+    },
+    statusPill: {
+      borderRadius: 999,
+      backgroundColor: isDark ? '#1a4033' : '#d2f0e5',
+      paddingHorizontal: 10,
+      paddingVertical: 6,
+    },
+    statusPillText: {
+      color: isDark ? '#9ae6c7' : '#117553',
+      fontSize: 11,
+      fontWeight: '700',
+    },
+    pressed: {
+      opacity: 0.84,
+    },
+  });

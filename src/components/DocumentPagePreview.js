@@ -113,31 +113,31 @@ export function DocumentPagePreview({
 
 const createStyles = (colors) =>
   StyleSheet.create({
-  container: {
-    overflow: 'hidden',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  badge: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    borderRadius: 999,
-    backgroundColor: 'rgba(28, 36, 33, 0.74)',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-  },
-  badgeText: {
-    color: '#fffaf2',
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  emptyState: {
-    backgroundColor: colors.canvas,
-  },
-});
+    container: {
+      overflow: 'hidden',
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+    },
+    overlay: {
+      ...StyleSheet.absoluteFillObject,
+    },
+    badge: {
+      position: 'absolute',
+      top: 8,
+      left: 8,
+      borderRadius: 999,
+      backgroundColor: colors.accentSoft,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+    },
+    badgeText: {
+      color: colors.accent,
+      fontSize: 10,
+      fontWeight: '700',
+    },
+    emptyState: {
+      backgroundColor: colors.canvas,
+    },
+  });

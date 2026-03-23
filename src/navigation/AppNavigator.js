@@ -1,6 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAppTheme } from '../context/ThemeContext';
 import { CaptureScreen } from '../screens/CaptureScreen';
@@ -8,14 +10,19 @@ import { EditorScreen } from '../screens/EditorScreen';
 import { ExportScreen } from '../screens/ExportScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { LibraryScreen } from '../screens/LibraryScreen';
-import { ProjectScreen } from '../screens/ProjectScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function CustomTabBar({ state, descriptors, navigation }) {
   const { colors } = useAppTheme();
-  const styles = createStyles(colors);
+  const insets = useSafeAreaInsets();
+  const styles = createStyles(colors, insets.bottom);
+  const iconByRoute = {
+    HomeTab: 'home-outline',
+    CaptureTab: 'scan-outline',
+    LibraryTab: 'library-outline',
+  };
 
   return (
     <View style={styles.tabBar}>
@@ -42,6 +49,11 @@ function CustomTabBar({ state, descriptors, navigation }) {
             onPress={onPress}
             style={[styles.tabItem, isFocused ? styles.tabItemActive : null]}
           >
+            <Ionicons
+              name={iconByRoute[route.name] ?? 'ellipse-outline'}
+              size={20}
+              color={isFocused ? colors.primary : colors.muted}
+            />
             <Text style={[styles.tabLabel, isFocused ? styles.tabLabelActive : null]}>{label}</Text>
           </Pressable>
         );
@@ -83,14 +95,6 @@ function MainTabs() {
           tabBarIcon: () => null,
         }}
       />
-      <Tab.Screen
-        name="ProjectTab"
-        component={ProjectScreen}
-        options={{
-          title: 'Projekt',
-          tabBarIcon: () => null,
-        }}
-      />
     </Tab.Navigator>
   );
 }
@@ -107,46 +111,49 @@ export function AppNavigator() {
   );
 }
 
-const createStyles = (colors) =>
+const createStyles = (colors, bottomInset) =>
   StyleSheet.create({
-  tabBar: {
-    flexDirection: 'row',
-    gap: 8,
-    height: 80,
-    paddingTop: 8,
-    paddingHorizontal: 8,
-    paddingBottom: 12,
-    marginHorizontal: 16,
-    marginBottom: 12,
-    borderRadius: 24,
-    backgroundColor: colors.surface,
-    borderTopWidth: 0,
-    borderWidth: 1,
-    borderColor: colors.border,
-    elevation: 0,
-    shadowOpacity: 0,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  tabItem: {
-    flex: 1,
-    minHeight: 52,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tabItemActive: {
-    backgroundColor: colors.primary,
-  },
-  tabLabel: {
-    fontSize: 13,
-    fontWeight: '800',
-    lineHeight: 18,
-    color: colors.muted,
-  },
-  tabLabelActive: {
-    color: colors.surface,
-  },
-});
+    tabBar: {
+      flexDirection: 'row',
+      gap: 8,
+      height: 72 + bottomInset,
+      paddingTop: 8,
+      paddingHorizontal: 8,
+      paddingBottom: Math.max(10, bottomInset),
+      marginHorizontal: 0,
+      marginBottom: 0,
+      borderTopLeftRadius: 16,
+      borderTopRightRadius: 16,
+      backgroundColor: colors.surface,
+      borderTopWidth: 1,
+      borderColor: colors.border,
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 0,
+    },
+    tabItem: {
+      flex: 1,
+      minHeight: 56,
+      borderRadius: 12,
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 2,
+      borderWidth: 1,
+      borderColor: 'transparent',
+    },
+    tabItemActive: {
+      backgroundColor: colors.primarySoft,
+      borderColor: colors.border,
+    },
+    tabLabel: {
+      fontSize: 11,
+      fontWeight: '600',
+      lineHeight: 14,
+      color: colors.muted,
+    },
+    tabLabelActive: {
+      color: colors.primary,
+      fontWeight: '700',
+    },
+  });

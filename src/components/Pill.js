@@ -32,20 +32,23 @@ const createStyles = (colors) =>
   pill: {
     alignSelf: 'flex-start',
     paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 999,
-    backgroundColor: '#efe5d7',
+    paddingVertical: 5,
+    borderRadius: 9999,
+    borderWidth: 0,
+    backgroundColor: colors.accentSoft,
   },
   successPill: {
-    backgroundColor: '#dceddf',
+    backgroundColor: colors.accentSoft,
+    borderColor: 'transparent',
   },
   accentPill: {
     backgroundColor: colors.accentSoft,
+    borderColor: 'transparent',
   },
   label: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#6c584c',
+    color: colors.accent,
   },
   successLabel: {
     color: colors.success,

@@ -77,6 +77,7 @@ Szczegoly testow i checklista manualna:
 Dokumentacja techniczna:
 
 - `docs/ARCHITECTURE.md`
+- `docs/SCREENS.md`
 
 ## Przykladowy PDF
 

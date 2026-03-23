@@ -29,10 +29,13 @@
   - Start
   - Skan
   - Dokumenty
-  - Projekt
 - Stack screens:
   - Edytor
   - Eksport
+
+Szczegolowa dokumentacja ekranow:
+
+- `docs/SCREENS.md`
 
 ## Native notes
 

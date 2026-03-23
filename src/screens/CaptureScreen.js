@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import {
@@ -17,14 +18,14 @@ import DocumentScanner, {
 
 import { DocumentPagePreview } from '../components/DocumentPagePreview';
 import { PrimaryButton } from '../components/PrimaryButton';
-import { useDocument } from '../context/DocumentContext';
-import { useAppTheme } from '../context/ThemeContext';
 import { ScreenShell } from '../components/ScreenShell';
 import { SectionCard } from '../components/SectionCard';
+import { useDocument } from '../context/DocumentContext';
+import { useAppTheme } from '../context/ThemeContext';
 
 export function CaptureScreen({ navigation }) {
-  const { colors, isDark } = useAppTheme();
-  const styles = createStyles(colors, isDark);
+  const { colors, isDark, toggleTheme } = useAppTheme();
+  const styles = createStyles(colors);
   const [isScanning, setIsScanning] = useState(false);
 
   const {
@@ -96,7 +97,7 @@ export function CaptureScreen({ navigation }) {
           }))
         );
       }
-    } catch (error) {
+    } catch (_error) {
       Alert.alert(
         'Auto-skan niedostepny',
         'Ten natywny skaner nie dziala w Expo Go. Potrzebny jest dev build aplikacji.'
@@ -130,295 +131,170 @@ export function CaptureScreen({ navigation }) {
 
   return (
     <ScreenShell
-      title="Skanowanie"
-      subtitle="Natywny auto-skan dokumentow"
+      title="Skan"
+      subtitle="Auto-skaner dokumentow"
       rightAccessory={
         hasPages ? (
-          <Pressable style={styles.closeDocumentButton} onPress={handleCloseDocument}>
-            <Text style={styles.closeDocumentButtonText}>X</Text>
+          <View style={styles.headerAccessoryRow}>
+            <Pressable style={styles.headerActionButton} onPress={toggleTheme}>
+              <Text style={styles.headerActionText}>{isDark ? '\u2600' : '\u263E'}</Text>
+            </Pressable>
+            <Pressable style={styles.headerActionButton} onPress={handleCloseDocument}>
+              <Ionicons name="close" size={18} color="#ffffff" />
+            </Pressable>
+          </View>
+        ) : (
+          <Pressable style={styles.headerActionButton} onPress={toggleTheme}>
+            <Text style={styles.headerActionText}>{isDark ? '\u2600' : '\u263E'}</Text>
           </Pressable>
-        ) : null
+        )
       }
     >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled
-      >
-        <SectionCard
-          title="Auto-skaner dokumentow"
-          subtitle="Skanuj kamera albo dodawaj zdjecia z galerii"
-          accent
-        >
-          <View style={styles.cameraMock}>
-            {hasPages ? (
-              <DocumentPagePreview
-                page={activePage}
-                style={styles.previewImageWrap}
-                imageStyle={styles.previewImage}
-                showBadge
-              />
-            ) : (
-              <>
-                <View style={[styles.corner, styles.cornerTopLeft]} />
-                <View style={[styles.corner, styles.cornerTopRight]} />
-                <View style={[styles.corner, styles.cornerBottomLeft]} />
-                <View style={[styles.corner, styles.cornerBottomRight]} />
-                <View style={styles.detectionBadge}>
-                  <Text style={styles.detectionBadgeText}>Auto detect + auto crop</Text>
-                </View>
-                <View style={styles.cameraCenterCard}>
-                  <Text style={styles.cameraCenterTitle}>Uruchom natywny skaner</Text>
-                  <Text style={styles.cameraCenterText}>
-                    Dokument zostanie automatycznie wykryty i zapisany jako kolejna strona.
-                  </Text>
-                </View>
-              </>
-            )}
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <View style={styles.statsRow}>
+          <View style={styles.pill}>
+            <Text style={styles.pillText}>{pages.length} {pages.length === 1 ? 'strona' : 'stron'}</Text>
           </View>
+          {hasPages ? <Text style={styles.activeText}>Aktywna: {activePage?.label ?? '1'}</Text> : null}
+        </View>
 
-          <View style={styles.quickStats}>
-            <View style={styles.quickStatCard}>
-              <Text style={styles.quickStatLabel}>Strony</Text>
-              <Text style={styles.quickStatValue}>{pages.length || 0}</Text>
-            </View>
-            <View style={styles.quickStatCard}>
-              <Text style={styles.quickStatLabel}>Aktywna</Text>
-              <Text style={styles.quickStatValue}>{activePage?.label ?? 'Brak'}</Text>
-            </View>
-          </View>
-
-          <View style={styles.buttonRow}>
-            <View style={styles.buttonItem}>
-              <PrimaryButton label={isScanning ? 'Uruchamianie...' : 'Uruchom skaner'} onPress={handleAutoScan} />
-            </View>
-            <View style={styles.buttonItem}>
-              <PrimaryButton label="Dodaj z galerii" variant="secondary" onPress={handlePickImages} />
-            </View>
-          </View>
-
-          <View style={styles.buttonRow}>
-            <View style={styles.buttonItem}>
-              <PrimaryButton label="Edytor" variant="secondary" onPress={() => navigation.navigate('Editor')} />
-            </View>
-            <View style={styles.buttonItem}>
-              <PrimaryButton label="Eksport i share" onPress={() => navigation.navigate('Export')} />
-            </View>
-          </View>
-
+        <SectionCard title="">
+          <PrimaryButton
+            label={isScanning ? 'Skanowanie...' : 'Zeskanuj dokument'}
+            onPress={handleAutoScan}
+          />
+          <PrimaryButton label="Import z galerii" variant="secondary" onPress={handlePickImages} />
         </SectionCard>
 
-        <SectionCard
-          title="Sekwencja wielostronicowa"
-          subtitle={hasPages ? 'Aktualne strony roboczego dokumentu' : 'Po skanowaniu strony pojawia sie tutaj'}
-        >
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.pageStrip}>
-              {pages.map((page) => (
-                <Pressable
-                  key={page.id}
-                  style={[styles.pageCard, activePageId === page.id ? styles.pageCardActive : null]}
-                  onPress={() => setActivePageId(page.id)}
-                >
-                  <DocumentPagePreview page={page} style={styles.pagePreview} imageStyle={styles.pagePreview} showBadge />
-                  <Text style={styles.pageLabel}>{page.label}</Text>
-                  <Text style={styles.pageState}>{page.state}</Text>
-                </Pressable>
-              ))}
-              <Pressable style={styles.pageCardAdd} onPress={handlePickImages}>
-                <Text style={styles.pageAddText}>{hasPages ? '+ Dodaj kolejna' : '+ Dodaj strone'}</Text>
-              </Pressable>
-            </View>
-          </ScrollView>
-        </SectionCard>
+        {hasPages ? (
+          <>
+            <SectionCard title="Szybkie przejscia">
+              <View style={styles.buttonRow}>
+                <View style={styles.buttonItem}>
+                  <PrimaryButton label="Edytor" variant="secondary" onPress={() => navigation.navigate('Editor')} />
+                </View>
+                <View style={styles.buttonItem}>
+                  <PrimaryButton label="Eksport" variant="secondary" onPress={() => navigation.navigate('Export')} />
+                </View>
+              </View>
+            </SectionCard>
+
+            <SectionCard title="Sekwencja stron">
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={styles.pageStrip}>
+                  {pages.map((page) => (
+                    <Pressable
+                      key={page.id}
+                      style={[styles.pageCard, activePageId === page.id ? styles.pageCardActive : null]}
+                      onPress={() => setActivePageId(page.id)}
+                    >
+                      <DocumentPagePreview page={page} style={styles.pagePreview} imageStyle={styles.pagePreview} showBadge />
+                      <Text style={styles.pageLabel}>{page.label}</Text>
+                    </Pressable>
+                  ))}
+                  <Pressable style={styles.pageCardAdd} onPress={handlePickImages}>
+                    <Ionicons name="add" size={26} color={colors.muted} />
+                  </Pressable>
+                </View>
+              </ScrollView>
+            </SectionCard>
+          </>
+        ) : null}
       </ScrollView>
     </ScreenShell>
   );
 }
 
-const createStyles = (colors, isDark) =>
+const createStyles = (colors) =>
   StyleSheet.create({
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 168,
-    gap: 16,
-  },
-  cameraMock: {
-    height: 420,
-    borderRadius: 28,
-    backgroundColor: colors.camera,
-    overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  corner: {
-    position: 'absolute',
-    width: 34,
-    height: 34,
-    borderColor: '#fff7ec',
-  },
-  cornerTopLeft: {
-    top: 28,
-    left: 24,
-    borderTopWidth: 4,
-    borderLeftWidth: 4,
-  },
-  cornerTopRight: {
-    top: 28,
-    right: 24,
-    borderTopWidth: 4,
-    borderRightWidth: 4,
-  },
-  cornerBottomLeft: {
-    bottom: 28,
-    left: 24,
-    borderBottomWidth: 4,
-    borderLeftWidth: 4,
-  },
-  cornerBottomRight: {
-    bottom: 28,
-    right: 24,
-    borderBottomWidth: 4,
-    borderRightWidth: 4,
-  },
-  detectionBadge: {
-    position: 'absolute',
-    top: 22,
-    alignSelf: 'center',
-    backgroundColor: 'rgba(247, 242, 232, 0.16)',
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-  },
-  detectionBadgeText: {
-    color: '#fff7ec',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  cameraCenterCard: {
-    width: '78%',
-    borderRadius: 24,
-    padding: 18,
-    backgroundColor: 'rgba(255, 250, 242, 0.12)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 250, 242, 0.18)',
-    gap: 8,
-  },
-  cameraCenterTitle: {
-    color: '#fffaf2',
-    fontSize: 19,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  cameraCenterText: {
-    color: '#dbe6e0',
-    fontSize: 14,
-    lineHeight: 20,
-    textAlign: 'center',
-  },
-  previewImageWrap: {
-    position: 'absolute',
-    top: 26,
-    right: 24,
-    bottom: 26,
-    left: 24,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 250, 242, 0.18)',
-  },
-  previewImage: {
-    width: '100%',
-    height: '100%',
-  },
-  quickStats: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  quickStatCard: {
-    flex: 1,
-    borderRadius: 18,
-    backgroundColor: colors.canvas,
-    padding: 12,
-    gap: 4,
-  },
-  quickStatLabel: {
-    fontSize: 12,
-    color: colors.muted,
-  },
-  quickStatValue: {
-    fontSize: 14,
-    color: colors.text,
-    fontWeight: '700',
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  buttonItem: {
-    flex: 1,
-  },
-  closeDocumentButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 16,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeDocumentButtonText: {
-    color: colors.text,
-    fontSize: 16,
-    fontWeight: '800',
-  },
-  pageStrip: {
-    flexDirection: 'row',
-    gap: 12,
-    paddingRight: 4,
-  },
-  pageCard: {
-    width: 138,
-    borderRadius: 22,
-    backgroundColor: colors.canvas,
-    padding: 12,
-    gap: 10,
-    borderWidth: 1,
-    borderColor: 'transparent',
-  },
-  pageCardActive: {
-    borderColor: colors.primary,
-    backgroundColor: isDark ? '#23302a' : '#f6efe3',
-  },
-  pageCardAdd: {
-    width: 138,
-    borderRadius: 22,
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surface,
-    padding: 12,
-  },
-  pageAddText: {
-    color: colors.accent,
-    fontWeight: '700',
-  },
-  pagePreview: {
-    height: 144,
-    borderRadius: 16,
-    backgroundColor: isDark ? '#1f2925' : '#ece2d4',
-  },
-  pageLabel: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  pageState: {
-    fontSize: 13,
-    color: colors.muted,
-    lineHeight: 18,
-  },
-});
+    scrollContent: {
+      paddingHorizontal: 8,
+      paddingBottom: 104,
+      gap: 10,
+    },
+    headerAccessoryRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    headerActionButton: {
+      width: 38,
+      height: 38,
+      borderRadius: 19,
+      backgroundColor: 'rgba(255,255,255,0.24)',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    headerActionText: {
+      color: '#ffffff',
+      fontSize: 18,
+      fontWeight: '700',
+    },
+    statsRow: {
+      paddingHorizontal: 4,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 14,
+    },
+    pill: {
+      backgroundColor: colors.accentSoft,
+      borderRadius: 999,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+    },
+    pillText: {
+      color: colors.accent,
+      fontWeight: '700',
+      fontSize: 14,
+    },
+    activeText: {
+      color: colors.text,
+      fontSize: 17,
+      fontWeight: '500',
+    },
+    buttonRow: {
+      flexDirection: 'row',
+      gap: 10,
+    },
+    buttonItem: {
+      flex: 1,
+    },
+    pageStrip: {
+      flexDirection: 'row',
+      gap: 10,
+      paddingRight: 4,
+    },
+    pageCard: {
+      width: 112,
+      borderRadius: 12,
+      backgroundColor: colors.canvas,
+      borderWidth: 1,
+      borderColor: 'transparent',
+      padding: 6,
+      gap: 6,
+    },
+    pageCardActive: {
+      borderColor: colors.primary,
+    },
+    pagePreview: {
+      height: 140,
+      borderRadius: 10,
+    },
+    pageLabel: {
+      fontSize: 13,
+      color: colors.text,
+      fontWeight: '600',
+      textAlign: 'center',
+    },
+    pageCardAdd: {
+      width: 112,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderStyle: 'dashed',
+      borderColor: colors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.surface,
+    },
+  });
